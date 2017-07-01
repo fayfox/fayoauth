@@ -4,6 +4,7 @@ namespace fayoauth\services;
 abstract class OauthService{
     private static $map = array(
         'weixin'=>'fayoauth\services\weixin\WeixinOauthService',
+        'am'=>'fayoauth\services\am\AmOauthService',
     );
     
     /**
@@ -15,6 +16,11 @@ abstract class OauthService{
      * @var string App Secret
      */
     protected $app_secret;
+
+    /**
+     * @var string 回调地址
+     */
+    protected $redirect_uri;
     
     public static function getInstance($code, $app_id, $app_secret){
         if(!isset(self::$map[$code])){
@@ -41,7 +47,7 @@ abstract class OauthService{
     
     /**
      * 获取用户信息
-     * @return array
+     * @return UserAbstract
      * @throws OAuthException
      */
     abstract public function getUser();
@@ -66,7 +72,7 @@ abstract class OauthService{
     
     /**
      * @param string $app_id
-     * @return OauthService
+     * @return $this
      */
     public function setAppId($app_id){
         $this->app_id = $app_id;
@@ -86,10 +92,19 @@ abstract class OauthService{
     
     /**
      * @param string $app_secret
-     * @return OauthService
+     * @return $this
      */
     public function setAppSecret($app_secret){
         $this->app_secret = $app_secret;
+        return $this;
+    }
+
+    /**
+     * @param $redirect_uri
+     * @return $this
+     */
+    public function setRedirectUri($redirect_uri){
+        $this->redirect_uri = $redirect_uri;
         return $this;
     }
 }
