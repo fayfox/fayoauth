@@ -1,7 +1,7 @@
 <?php
 namespace fayoauth\services\am;
 
-use fay\core\Http;
+use fay\core\Request;
 use fay\helpers\HttpHelper;
 use fay\helpers\StringHelper;
 use fayoauth\services\ClientAbstract;
@@ -30,7 +30,7 @@ class AmClient extends ClientAbstract{
         
         return HttpHelper::combineURL(self::AUTHORIZE_URL, array(
             'client_id'=>$this->app_id,
-            'redirect_uri'=>$this->redirect_uri ?: Http::getCurrentUrl(),
+            'redirect_uri'=>$this->redirect_uri ?: Request::getCurrentUrl(),
             'response_type'=>'code',
             'state'=>$this->state
         ));
@@ -42,7 +42,6 @@ class AmClient extends ClientAbstract{
      * @param null $state
      * @return AmAccessToken
      * @throws OAuthException
-     * @throws \fay\core\ErrorException
      */
     public function getAccessToken($code, $state = null){
         $state || $state = \F::input()->get('state');
@@ -56,7 +55,7 @@ class AmClient extends ClientAbstract{
             'client_secret'=>$this->app_secret,
             'code'=>$code,
             'grant_type'=>'authorization_code',
-            'redirect_uri'=>$this->redirect_uri ?: Http::getCurrentUrl(),
+            'redirect_uri'=>$this->redirect_uri ?: Request::getCurrentUrl(),
         ));
         
         if(!isset($response['access_token'])){
